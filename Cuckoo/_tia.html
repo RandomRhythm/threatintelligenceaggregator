@@ -1,0 +1,43 @@
+<section id="tia">
+    <h4>TIA Results</h4>
+    {% if analysis.tia %}
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th width="10%">Vendor</th>
+                <th width="15%">Detection Name</th>
+                <th width="5%">Queued  Location</th>				
+                <th width="10%">Type</th>
+                <th width="5%">Risk Score</th>
+                <th width="15%">Published</th>
+                <th width="15%">First Seen</th>
+                <th width="15%">Last Seen</th>
+                <th width="15%">Modified</th>
+                <th width="5%">Removed</th>
+            </tr>
+            {% for result in analysis.tia %}
+            {% if result.DetectionName %}
+            <tr>
+                <td>{{result.VendorName}}</td>
+                
+				{% if result.URL %}
+                <td><a href="{{result.URL}}">{{result.DetectionName}}</a></td>
+                {% else %}
+				<td>{{result.DetectionName}}</td>
+				{% endif %}
+				<td>{{result.Queue}}</td>
+				<td>{{result.MalwareType}}</td>
+                <td>{{result.RiskScore}}</td>
+                <td>{{result.DateCreated}}</td>
+                <td>{{result.DateFirstSeen}}</td>
+				<td>{{result.DateLastSeen}}</td>
+				<td>{{result.ModifiedCount}}</td>
+				<td>{{result.Removed}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+
+    {% else %}
+        <p>No TIA Results</p>
+    {% endif %}
+</section>
