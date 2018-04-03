@@ -4,7 +4,7 @@ from lib.cuckoo.common.exceptions import CuckooProcessingError
 from lib.cuckoo.common.abstracts import Processing
 
 class tia(Processing):
-	order = 14
+	order = 19
 	def run(self):
 		self.key = "tia"
 		if self.task["category"] != "file":
