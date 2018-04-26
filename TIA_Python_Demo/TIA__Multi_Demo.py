@@ -19,8 +19,8 @@ import urllib.request
 from urllib.request import Request, urlopen
 from optparse import OptionParser
 
-def tia_request(strVendor, strDetectionName, apikey): #performs HTTP GET against TIA API and returns results
-    url = "https://threatintelligenceaggregator.org/api/v1/" + strVendor + "/?name=" + strDetectionName + "&ApiKey=" + apikey;
+def tia_request(vendorQueryString, apikey): #performs HTTP GET against TIA API and returns results
+    url = "https://threatintelligenceaggregator.org/api/v1/MultipleRequests/?" + vendorQueryString + "&ApiKey=" + apikey;
 
     try:
         with urllib.request.urlopen(url) as response:
@@ -68,28 +68,39 @@ tiarow = ""
 if not "scans" in vtresults:
     print("no virustotal results")
     sys.exit(-1)
+queryStringPart = ""
+
 #loop through vendor detection names
 for vendorname in vtresults["scans"]:
     if vendorname in dictTIA and vtresults["scans"][vendorname]["result"] != None: #if vendor supported by TIA
 
         detectionName = vtresults["scans"][vendorname]["result"]
-        #TIA API call
-        tiaResponse = tia_request(vendorname,detectionName, opts.apikey)
-        #if valid json
-        if is_json(tiaResponse) == True:
-            tiaResults = json.loads(tiaResponse)
-            for column in tiaResults:
-                if headrow == "":
-                    headrow = column
-                else:
-                    headrow = headrow + "," + column
+        if queryStringPart == "":
+            queryStringPart = vendorname + "=" + detectionName
+        else:
+            queryStringPart = queryStringPart + "&" + vendorname + "=" + detectionName
+if queryStringPart != "":
+    #TIA API call
+    tiaResponse = tia_request(queryStringPart, opts.apikey)
+    #if valid json
+    if is_json(tiaResponse) == True:
+        boolHeaderSet = False;
+        tiaResults = json.loads(tiaResponse)
+        for result in tiaResults:
+            for column in result:
+                if boolHeaderSet == False:
+                    if headrow == "":
+                        headrow = column
+                    else:
+                        headrow = headrow + "," + column
+            boolHeaderSet = True;
             if tiarow == "":
                 print (headrow)
             tiarow = ""
-            for column in tiaResults:
+            for column in result:
                 if tiarow == "":
-                    tiarow = str(tiaResults[column])
+                    tiarow = str(result[column])
                 else:
-                    tiarow = tiarow + "," + str(tiaResults[column])
+                    tiarow = tiarow + "," + str(result[column])
             print (tiarow)
 
