@@ -1,5 +1,4 @@
 #Copyright (c) 2018 Ryan Boyle randomrhythm@rhythmengineering.com.
-#All rights reserved.
 
 #This program is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by

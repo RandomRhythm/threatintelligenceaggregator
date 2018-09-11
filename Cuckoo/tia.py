@@ -1,5 +1,4 @@
 #Copyright (c) 2018 Ryan Boyle randomrhythm@rhythmengineering.com.
-#All rights reserved.
 
 #This program is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -27,8 +26,7 @@ class tia(Processing):
 		dictTIA = {'BitDefender': None, 'TrendMicro': None, 'Symantec': None, 'F-Secure': None, 'ESET-NOD32': None, 'DrWeb': None, 'Avira': None, 'AntiVir': None, 'Microsoft': None, 'Sophos': None, 'Panda': None, 'BitDefender': None, 'McAfee': None, 'ClamAV': None}
 		key = self.options.get("key", None)
 		if not key:
-				raise CuckooProcessingError("TIA API key not "
-											"configured, skip")
+				raise CuckooProcessingError("TIA API key not configured, skip")
 		response_data = ""
 		queryStringPart = ""
 		#print self.results["virustotal"]["results"]
@@ -50,7 +48,7 @@ class tia(Processing):
 		try:
 			json_object = json.loads(response_data)
 		except ValueError, e:
-			CuckooProcessingError("TIA error processing combined JSON: " + response_data)
+			raise CuckooProcessingError("TIA error processing combined JSON: " + response_data)
 		#print json_object
 		return json_object
 
@@ -59,19 +57,18 @@ def tia_request(vendorQueryString, apikey): #performs HTTP GET against TIA API a
 	data = {"ApiKey": apikey}
 	timeout = 60
 	try:
-		r = requests.get(url, params=data, verify=True, timeout=int(timeout))
+		r = requests.get(url, params=data, verify=True, timeout=timeout) #set verify=False to bypass certificate verification 
 		
 	except requests.exceptions.RequestException as e:
-		raise CuckooProcessingError("Unable to complete connection "
-									"to TIA: {0}".format(e))
+		raise CuckooProcessingError("Unable to complete connection to TIA: {0}".format(e))
 	return r.content
 
 def combineTIAresults(queryStringPart, vendorname, detectionName):
 	queryStringPieces = queryStringPart
 	if queryStringPieces == "":
-		queryStringPieces = vendorname + "=" + detectionName
+		queryStringPieces = "%s=%s" % (vendorname, detectionName)
 	else:
-		queryStringPieces = queryStringPieces + "&" + vendorname + "=" + detectionName	
+		queryStringPieces = queryStringPieces + "&" + "%s=%s" % (vendorname, detectionName)	
 	return queryStringPieces
 		
 def is_json(myjson):

@@ -44,9 +44,10 @@ Result example from query:
 If you provide an invalid API key you will received a 401 error:
 
 `HTTP/1.1 401 Unauthorized
-<Error><Message>Authorization has been denied for this request.</Message></Error>`
+{"Message":"Authorization has been denied for this request."}`
 
 If you  go over API threshold limit of 48 a minute you will receive a 402 error:
 
-    <string>Rate limit exceeded</string>
+`"Rate limit exceeded"`
+    
 All API provided dates are in UTC. 
