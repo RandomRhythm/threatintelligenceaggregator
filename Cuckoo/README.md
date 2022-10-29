@@ -34,7 +34,7 @@ Also check content include in cuckoo.pyproj and add if missing.
 <Content Include="web\templates\analysis\static\_antivirus.html" />
 <Content Include="web\templates\analysis\static\_tia.html" />
 ```
-add the following to config/processing.conf repliacing the key with your assigned key:
+add the following to config/processing.conf replicating the key with your assigned key:
 [tia]
 enabled = yes
 key = 0123456789ABCD
